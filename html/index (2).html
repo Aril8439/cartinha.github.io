@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartinha Virtual</title>
+  <!-- Importando a fonte Minecraft -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    /* Resetando estilos para uma base consistente */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background-color: #2F2F2F; /* Cinza escuro */
+      color: #800000; /* Cor vinho vermelho */
+      text-align: center;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Fundo com imagem de fundo principal */
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://via.placeholder.com/1500x1000/800000/fff?text=Fundo+Personalizado');
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+    }
+
+    /* Estilizando o Menu */
+    .menu {
+      background: linear-gradient(to right, #800000, #b20000); /* Gradiente de vinho */
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 20; /* Valor de z-index maior para garantir que o menu fique acima dos cards */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra para dar profundidade */
+      transition: all 0.3s ease; /* Transição para animações */
+    }
+
+    .menu:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); /* Sombras mais fortes ao passar o mouse */
+    }
+
+    .menu button {
+      background-color: #bd0101; /* Cinza escuro */
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      padding: 15px 30px;
+      margin: 0 20px;
+      cursor: pointer;
+      border-radius: 50px; /* Botões arredondados */
+      transition: all 0.3s ease; /* Transição suave */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra para profundidade */
+    }
+
+    .menu button:hover {
+      background-color: #800000;
+      color: #fff;
+      transform: scale(1.1); /* Aumenta o botão ao passar o mouse */
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Aumenta a sombra */
+    }
+
+    .menu button:active {
+      transform: scale(1); /* Efeito de pressionar o botão */
+    }
+
+    /* Rolagem da página */
+    .content {
+      padding: 20px;
+      margin-top: 60px;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .content h1 {
+      font-size: 32px;
+      color: #800000; /* Cor vinho */
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6), -2px -2px 4px rgba(0, 0, 0, 0.5); /* Sombra de texto */
+    }
+
+    .content p {
+      font-size: 18px;
+      color: #fff;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    /* Estilo do controle de áudio */
+    .audio-control {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #800000;
+      color: white;
+      font-size: 24px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      padding: 15px;
+      z-index: 20; /* Certifica que o botão fique acima de outros elementos */
+    }
+
+    .audio-control:hover {
+      background-color: #b20000;
+    }
+
+    /* Imagens fixas no canto inferior */
+    .side-image-left, .side-image-right {
+      position: fixed;
+      bottom: 20px; /* Colocando na parte inferior da tela */
+      width: 100px; /* Ajuste o tamanho da imagem */
+      height: 100px; /* Ajuste o tamanho da imagem */
+      z-index: 10;
+    }
+
+    .side-image-left {
+      left: 20px; /* Afastando da borda esquerda */
+    }
+
+    .side-image-right {
+      right: 20px; /* Afastando da borda direita */
+    }
+
+    /* Estilo para o card */
+    .card {
+      margin-top: 100px;
+      background-color: #353535;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 550px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      transform: translateY(-50px);
+      transition: all 0.5s ease-in-out;
+      animation: slideIn 1s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(0);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card .goal {
+      font-size: 36px;
+      font-weight: bold;
+      color: #800000;
+      margin-top: 20px;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .card .relationship {
+      font-size: 28px;
+      color: #b20000;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* Animação de brilho da borda */
+    @keyframes borderGlow {
+      0% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.4);
+      }
+      100% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.6);
+      }
+    }
+
+    /* Aplicando o efeito de borda brilhante ao card */
+    .card {
+      animation: borderGlow 2s infinite ease-in-out;
+    }
+
+    /* Animação de slide-in para o card */
+    @keyframes slideIn {
+      0% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <!-- Imagens fixas no canto inferior -->
+  <img class="side-image-left" src="/Midias/maru2.png" alt="Imagem Lateral Esquerda">
+  <img class="side-image-right" src="/Midias/maru1.png" alt="Imagem Lateral Direita">
+
+  <div class="menu">
+    <button onclick="location.href='/html/cartinha.html.html'">inicial</button>
+    <button onclick="location.href='/html/150.html'">5 meses</button>
+  </div>
+
+  <!-- Controle de áudio -->
+  <button class="audio-control" onclick="toggleAudio()">🔊</button>
+
+  <!-- Música de fundo -->
+  <audio id="audio" loop>
+    <source src="/Midias/AUD-20250402-WA0020.mp3" type="audio/mp3">
+    Seu navegador não suporta a tag de áudio.
+  </audio>
+
+  <div class="content">
+    <h1>FELIZ 5 MESES!!</h1>
+    <p>5 meses com o menino que eu mais amo nesse mundo.
+    <!-- Card com imagem e metas -->
+    <div class="card">
+      <img src="/Midias/Pablo.png" alt="Imagem do Amor">
+      <div class="goal">Meta Concluída: SCORE:152 </div>
+      <div class="relationship">5 meses de relacionamento</div>
+    </div>
+  </div>
+
+  <script>
+    // Função para alternar o áudio
+    function toggleAudio() {
+      const audio = document.getElementById('audio');
+      const button = document.querySelector('.audio-control');
+
+      if (audio.paused) {
+        audio.play();
+        button.textContent = "🔊";  // Som ligado
+      } else {
+        audio.pause();
+        button.textContent = "🔇";  // Som desligado
+      }
+    }
+  </script>
+</body>
+</html>

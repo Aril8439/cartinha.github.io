@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartinha Virtual</title>
+  
+  <!-- Importando a fonte do Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Resetando estilos para uma base consistente */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Press Start 2P', cursive; /* Aplica a fonte Minecraft */
+      background-color: #2F2F2F; /* Cinza escuro */
+      color: #800000; /* Cor vinho vermelho */
+      text-align: center;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Fundo com imagem de fundo principal */
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://via.placeholder.com/1500x1000/800000/fff?text=Fundo+Personalizado');
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+    }
+
+    /* Estilizando o Menu */
+    .menu {
+      background: linear-gradient(to right, #800000, #b20000); /* Gradiente de vinho */
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 20; /* Valor de z-index maior para garantir que o menu fique acima dos cards */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra para dar profundidade */
+      transition: all 0.3s ease; /* Transição para animações */
+    }
+
+    .menu:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); /* Sombras mais fortes ao passar o mouse */
+    }
+
+    .menu button {
+      background-color: #bd0101; /* Cinza escuro */
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      padding: 15px 30px;
+      margin: 0 20px;
+      cursor: pointer;
+      border-radius: 50px; /* Botões arredondados */
+      transition: all 0.3s ease; /* Transição suave */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra para profundidade */
+    }
+
+    .menu button:hover {
+      background-color: #800000;
+      color: #fff;
+      transform: scale(1.1); /* Aumenta o botão ao passar o mouse */
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Aumenta a sombra */
+    }
+
+    .menu button:active {
+      transform: scale(1); /* Efeito de pressionar o botão */
+    }
+
+    /* Espaço para cards */
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: visible; /* Permite que os cards cresçam fora do limite */
+      margin-top: 40px;
+      padding: 20px;
+    }
+
+    .cards-wrapper {
+      display: flex;
+      transition: transform 0.5s ease;
+      gap: 20px; /* Reduzindo o espaçamento entre os cards */
+    }
+
+    .card {
+      background-color: #2F2F2F; /* Cinza escuro */
+      border: 2px solid #800000;
+      width: 300px; /* Aumentando o tamanho do card */
+      height: 400px; /* Aumentando o tamanho do card */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden; /* Impede que a imagem ultrapasse os limites do card */
+      z-index: 10; /* z-index para os cards */
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .card:hover {
+      transform: scale(1.1);
+      border-color: #ff9900; /* Cor de destaque */
+    }
+
+    .card.clicked {
+      transform: scale(1.2);
+      border-color: #ff9900;
+      box-shadow: 0 0 15px rgba(255, 153, 0, 0.7);
+      z-index: 15; /* Card clicado tem z-index maior para ficar acima dos outros cards */
+    }
+
+    /* Texto do card (Agora com fundo transparente) */
+    .card-text {
+      margin-top: 20px;
+      color: #800000;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 20px auto;
+      display: none;
+      max-height: 400px; /* Limite para o tamanho do texto */
+      overflow-y: auto; /* Permite rolar se o texto for maior */
+      padding: 20px;
+      background-color: transparent; /* Fundo transparente */
+      color: #fff; /* Cor do texto */
+      border-radius: 10px;
+      border: none; /* Remove a borda */
+    }
+
+    /* Rolagem da página */
+    .content {
+      padding: 20px;
+      margin-top: 60px;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .content h1 {
+      font-size: 32px;
+      color: #800000; /* Cor vinho */
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6), -2px -2px 4px rgba(0, 0, 0, 0.5); /* Sombra de texto */
+    }
+
+    .content p {
+      font-size: 18px;
+      color: #fff;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    /* Estilo do controle de áudio */
+    .audio-control {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #800000;
+      color: white;
+      font-size: 24px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      padding: 15px;
+      z-index: 20; /* Certifica que o botão fique acima de outros elementos */
+    }
+
+    .audio-control:hover {
+      background-color: #b20000;
+    }
+
+    /* Imagens fixas no canto inferior */
+    .side-image-left, .side-image-right {
+      position: fixed;
+      bottom: 20px; /* Colocando na parte inferior da tela */
+      width: 100px; /* Ajuste o tamanho da imagem */
+      height: 100px; /* Ajuste o tamanho da imagem */
+      z-index: 10;
+    }
+
+    .side-image-left {
+      left: 20px; /* Afastando da borda esquerda */
+    }
+
+    .side-image-right {
+      right: 20px; /* Afastando da borda direita */
+    }
+
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <!-- Imagens fixas no canto inferior -->
+  <img class="side-image-left" src="/Midias/maru2.png" alt="Imagem Lateral Esquerda">
+  <img class="side-image-right" src="/Midias/maru1.png" alt="Imagem Lateral Direita">
+
+  <div class="menu">
+    <button onclick="location.href='/html/cartinha.html.html'">Inicial</button>
+    <button onclick="location.href='/html/150.html'">5 meses</button>
+  </div>
+
+  <!-- Controle de áudio -->
+  <button class="audio-control" onclick="toggleAudio()">🔊</button>
+
+  <!-- Música de fundo -->
+  <audio id="audio" loop>
+    <source src="/Midias/AUD-20250402-WA0020.mp3" type="audio/mp3">
+    Seu navegador não suporta a tag de áudio.
+  </audio>
+
+  <div class="content">
+    <h1>FELIZ ANIVERSARIO MEU AMOR!</h1>
+    <p>Nenhum erro de escrita ou programação se compara ao erro de não ter te namorado antes, rs
+      (clique nas nossas fotinhas abaixo, e leia o texto abaixo delas.)
+    </p>
+
+    <div class="cards-container">
+      <div class="cards-wrapper" id="cardsWrapper">
+        <div class="card" data-text="Feliz aniversário, meu amor! Pablo você não tem noção do quão importante você é pra mim meu amor, desde o primeiro contato juntos você foi uma pessoa incrivel pra mim, eu amei te conhecer e amo te ter hoje em dia como meu namorado. você é a pessoa que me faz feliz e sou grata por ter você, queria poder fazer muito mais pra você, mas nem tudo ta no meu alcance, mas o que eu puder fazer pra te deixar feliz e mostrar que eu te amo eu vou meu amor." onclick="showCardText(this)">
+          <img src="/Midias/Card1.png" alt="Card 1">
+        </div>
+        <div class="card" data-text="Meu amor hoje é um dia especial pra nois dois! foi o dia do seu nascimento; e o dia em que a pessoa que eu amo veio ao mundo, e vive nele até hoje. Quero que voce aproveite muito seu dia meu amor, quero que saiba que quero te ver feliz independente da data, mas hoje eu tentei te fazer algo diferente e especial. Espero muito que goste e fique feliz, tambem vou ficar feliz em saner que te fiz sorrir com essa cartinha;" onclick="showCardText(this)">
+          <img src="/Midias/Card2.png">
+        </div>
+        <div class="card" data-text="Parabéns pelo seu aniversário vida! Que seu dia seja completo de alegria e que seu dia possa ser bonito que nem o seu sorriso. Desejo tudo de bom a você vida, te desejo um otimo aniversário! Feliz 20 aninhos meu amor. O tempo passa rapido, eu aguardo você relembrar muitas vezes essa data comigo ao seu lado. Eu amo muito você minha vida; Eu quero tudo de melhor pra você." onclick="showCardText(this)">
+          <img src="/Midias/Card3.png" alt="Card 3">
+        </div>
+      </div>
+    </div>
+
+    <div id="cardText" class="card-text"></div>
+  </div>
+
+  <script>
+    // Função para mostrar o texto do card clicado
+    function showCardText(card) {
+      const text = card.getAttribute('data-text');
+      const textElement = document.getElementById('cardText');
+
+      // Exibe o texto do card clicado
+      textElement.textContent = text;
+      textElement.style.display = 'block';  // Exibe a área de texto
+
+      // Remover a classe 'clicked' de todos os cards
+      const allCards = document.querySelectorAll('.card');
+      allCards.forEach(c => c.classList.remove('clicked'));
+
+      // Adiciona a classe 'clicked' ao card atual
+      card.classList.add('clicked');
+    }
+
+    // Função para alternar o áudio
+    function toggleAudio() {
+      const audio = document.getElementById('audio');
+      const button = document.querySelector('.audio-control');
+
+      if (audio.paused) {
+        audio.play();
+        button.textContent = "🔊";  // Som ligado
+      } else {
+        audio.pause();
+        button.textContent = "🔇";  // Som desligado
+      }
+    }
+  </script>
+</body>
+</html>
